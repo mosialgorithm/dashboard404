@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="IR-fa" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="CoreUI Bootstrap 4 Admin Template">
+    <meta name="author" content="Lukasz Holeczek">
+    <meta name="keyword" content="Flask Bootstrap 4 Admin Panel">
+    <!-- <link rel="shortcut icon" href="assets/ico/favicon.png"> -->
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Icons -->
+    <link href="{{url_for('static', filename='css/font-awesome.min.css')}}" rel="stylesheet">
+    <link href="{{url_for('static', filename='css/simple-line-icons.css')}}" rel="stylesheet">
+    <!-- Main styles for this application -->
+    <link href="{{url_for('static', filename='css/style.min.css')}}" rel="stylesheet">
+
+    <!-- Plugins and scripts addedd by developer -->
+    <script defer src="{{url_for('static', filename='js/alpine@3.14.8.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/htmx@2.0.4.min.js')}}"></script>
+</head>
+<body class="navbar-fixed fixed-nav">
+    
+    {% block content %}{% endblock %}
+
+    <!-- Bootstrap and necessary plugins -->
+    <script src="{{url_for('static', filename='js/libs/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/libs/tether.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/libs/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/libs/pace.min.js')}}"></script>
+
+    <!-- Plugins and scripts required by all views -->
+    <script src="{{url_for('static', filename='js/libs/Chart.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/app.js')}}"></script>
+    <script src="{{url_for('static', filename='js/views/main.js')}}"></script>
+
+    
+
+</body>
+
+</html>
