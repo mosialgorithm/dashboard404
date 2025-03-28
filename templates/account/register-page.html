@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %} Register Page {% endblock %}
+{% block content %}
+<div class="wrapper vh-100">
+  <div class="row align-items-center h-100">
+    <form class="col-lg-6 col-md-8 col-10 mx-auto" x-data="registerForm">
+      <div class="mx-auto text-center my-4">
+        <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
+          <svg version="1.1" id="logo" class="navbar-brand-img brand-md" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+            <g>
+              <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+              <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+              <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+            </g>
+          </svg>
+        </a>
+        <h2 class="my-3">Register</h2>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputEmail4">شماره همراه</label>
+          <input type="text" class="form-control" x-model="phone">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="firstname">نام و نام خانوادگی</label>
+          <input type="text" class="form-control" x-model="full_name">
+        </div>
+
+      </div>
+      <hr class="my-4">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="inputPassword5">گذرواژه </label>
+            <input type="password" class="form-control" x-model="password">
+          </div>
+          <div class="form-group">
+            <label for="inputPassword6"> تکرار گذرواژه</label>
+            <input type="password" class="form-control" x-model="password_confirm">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <p class="mb-2">الزامات گذرواژه انتخابی </p>
+          <p class="small text-muted mb-2"> لطفا موارد زیر را برای انتخاب گذرواژه رعایت فرمایید </p>
+          <ul class="small text-muted pl-4 mb-0">
+            <li> حداقل از 8 کاراکتر تشکیل شده باشد </li>
+            <li>از کاراکترهای خاص استفاده کنید</li>
+            <li>شامل اعداد باشد</li>
+          </ul>
+        </div>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="submitForm()">ثبت نام</button>
+      <p class="mt-5 mb-3 text-muted text-center">© 2025</p>
+    </form>
+  </div>
+</div>
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('registerForm', () => ({
+      phone: '',
+      full_name: '',
+      password: '',
+      password_confirm: '',
+      async submitForm() {
+        console.log("btn is clicked");
+        console.log(this.full_name, this.phone, this.password, this.password_confirm);
+        console.log(this.full_name.length, this.phone.length, this.password.length, this.password_confirm.length);
+
+        if (this.full_name.length == 0 || this.phone.length == 0 || this.password.length == 0) {
+            Toast.fire({
+                icon: "warning",
+                title: "فیلدهای خالی را تکمیل نمایید"
+            });
+        }
+        else if (this.password !== this.password_confirm) {
+            Toast.fire({
+                icon: "warning",
+                title: "گذرواژه و تکرار گذرواژه یکسان نمی باشند"
+            });
+        }
+        else if (this.password.length < 8) {
+            Toast.fire({
+                icon: "warning",
+                title: "گذرواژه باید حداقل 8 کاراکتر باشد"
+            });
+        }
+        else if(this.phone.length != 11){
+            Toast.fire({
+                icon: "warning",
+                title: "شماره همراه وارد شده معتبر نمی باشد"
+            });
+        }
+        else {
+            const data = new FormData()
+            data.append('full_name', this.full_name.trim());
+            data.append('phone', this.phone);
+            data.append('password', this.password);
+            data.append('password_confirm', this.password_confirm);
+            console.log('data : ', data);
+            await fetch("{{url_for('account.register')}}",{
+                headers: {'Accept': 'application/json'},
+                method: "POST",
+                body: data
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('response data is : ', data)
+                if (data.status === 'success') {
+                    Toast.fire({
+                        icon: data.status,
+                        title: data.message
+                    });
+                   setTimeout(() => {
+                     window.location.href = "{{url_for('account.login')}}"
+                   }, 3000);
+                } else {
+                    Toast.fire({
+                        icon: data.status,
+                        title: data.message
+                    });
+                }
+            })
+            .catch((error) => {
+                Toast.fire({
+                    icon: data.status,
+                    title: data.message
+                });
+            })
+        }
+
+    }
+
+    }))
+  })
+</script>
+{% endblock %}

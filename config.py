@@ -12,8 +12,8 @@ class Config(object):
     
     # ========================================================================================
     UPLOAD_DIR = os.path.curdir + '/static/uploads/'
-    # SECRET_KEY = os.getenv('SECRET_KEY')
-    SECRET_KEY = "my_name_is_mostafa_ghorbani"
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    # SECRET_KEY = "my_name_is_mostafa_ghorbani"
 
     # ======================= File Uploading ================================
     UPLOAD_FOLDER = os.path.curdir + '/static/uploads'

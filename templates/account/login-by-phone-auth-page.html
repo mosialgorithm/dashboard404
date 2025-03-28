@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Login By Phone {% endblock %}
+{% block content %}
+<div class="wrapper vh-100">
+    <div class="row align-items-center h-100">
+      <form class="col-lg-3 col-md-4 col-10 mx-auto text-center" x-data="phoneAuthForm">
+        <div class="mx-auto text-center my-4">
+          <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
+            <svg version="1.1" id="logo" class="navbar-brand-img brand-md" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+              <g>
+                <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+              </g>
+            </svg>
+          </a>
+          <h2 class="my-3">ورود با تلفن همراه - ارسال کد </h2>
+        </div>
+        <p class="text-muted">کد ارسال شده به دستگاه تلفن همراه خود را به درستی وارد نمایید</p>
+        <div class="form-group">
+          <label for="inputEmail" class="sr-only"> کد ارسال شده </label>
+          <input type="text" id="inputEmail" class="form-control form-control-lg" placeholder="123456" x-model="code">
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="submitForm()"> ارزیابی کد </button>
+        <p class="mt-5 mb-3 text-muted">© 2025</p>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('phoneAuthForm', () => ({
+            code: '',
+ 
+            async submitForm() {
+                if(this.code.length != 6){
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'کد ارسال شده به تلفن همراه خود را به درستی وارد نمایید'
+                    });
+                } else{
+                    const data = new FormData()
+                    data.append('code', this.code)
+                    await fetch("{{url_for('account.login_by_phone_auth')}}", {
+                        headers: { 'Accept': 'application/json' },
+                        method: 'POST',
+                        body: data
+                    })
+                    .then(res => res.json())
+                    .then((data) => {
+                        if (data.status === "success") {
+                            Toast.fire({
+                                icon: data.status,
+                                title: data.message
+                            });
+                            setTimeout(() => {
+                                window.location.href = "{{url_for('admin.index')}}"
+                            }, 3000);
+                        } else {
+                            Toast.fire({
+                                icon: data.status,
+                                title: data.message
+                            });
+                            setTimeout(() => {
+                              window.location.href = "{{url_for('account.login_by_phone')}}"
+                          }, 3000);
+                        }
+                    })
+                }
+            }
+        }))
+    })
+</script>
+{% endblock %}
