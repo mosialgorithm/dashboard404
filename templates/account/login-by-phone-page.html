@@ -47,20 +47,29 @@
                     })
                     .then(res => res.json())
                     .then((data) => {
-                        if (data.status === "success") {
-                            Toast.fire({
-                                icon: data.status,
-                                title: data.message + '<br />' +  data.data
-                            });
-                            setTimeout(() => {
-                                window.location.href = "{{url_for('account.login_by_phone_auth')}}"
-                            }, 3000);
-                        } else {
-                            Toast.fire({
-                                icon: data.status,
-                                title: data.message
-                            });
-                        }
+                      if (data.status === "success") {
+                          Toast.fire({
+                              icon: data.status,
+                              title: data.message
+                          });
+                          setTimeout(() => {
+                              window.location.href = "{{url_for('account.login_by_phone_auth')}}"
+                          }, 4000);
+                      } else if(data.status === 'error' && data.title === 'not_phone'){
+                        Toast.fire({
+                          icon: data.error,
+                          title: data.message
+                        });
+                        setTimeout(() => {
+                          window.location.href = "{{url_for('account.register')}}"
+                        }, 4000);
+                        
+                      } else {
+                        Toast.fire({
+                            icon: data.status,
+                            title: data.message
+                        });
+                      }
                     })
                 }
             }

@@ -99,6 +99,13 @@ def login():
 def login_by_phone():
     if request.method == 'POST':
         phone = request.form.get('phone')
+        user = UserModel.query.filter_by(phone=phone).first()
+        if user is None:
+            return jsonify({
+                'status': 'error',
+                'title': 'not_phone',
+                'message': 'phone number is not register yet, please register first',
+            }) 
         session['user_phone'] = phone
         random_code = random.randint(100000,999999)
         user_phone = UserPhoneModel()
@@ -107,10 +114,10 @@ def login_by_phone():
         user_phone.expired_at = datetime.now() + timedelta(minutes=1)
         db.session.add(user_phone)
         db.session.commit()
+        print('random_code -> ', random_code) #todo: must be send SMS instead of print
         return jsonify({
                 'status': 'success',
                 'message': 'code is send to phone number',
-                'data': random_code
             }) 
         
     return render_template('account/login-by-phone-page.html')
