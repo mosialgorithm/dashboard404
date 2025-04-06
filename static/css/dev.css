@@ -1,0 +1,32 @@
+@font-face {
+	font-family: 'Yekan';
+	src: url( '../fonts/yekan/Yekan.eot' );
+	src: url( 'Yekan.eot?#iefix' ) format( 'embedded-opentype' ),
+		url( '../fonts/yekan/Yekan.woff2' ) format( 'woff2' ),
+		url( '../fonts/yekan/Yekan.woff' ) format( 'woff' ),
+		url( '../fonts/yekan/Yekan.ttf' ) format( 'truetype' ),
+		url( '../fonts/yekan/Yekan.svg#Yekan' ) format( 'svg' );
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Vazir';
+	src: url( '../fonts/vazir/Vazir.eot' );
+	src: url( 'Vazir.eot?#iefix' ) format( 'embedded-opentype' ),
+		url( '../fonts/vazir/Vazir.woff2' ) format( 'woff2' ),
+		url( '../fonts/vazir/Vazir.woff' ) format( 'woff' ),
+		url( '../fonts/vazir/Vazir.ttf' ) format( 'truetype' ),
+		url( '../fonts/vazir/Vazir.svg#Yekan' ) format( 'svg' );
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+    font-family: Vazir, Yekan !important;
+}
+
+
+a {
+    text-decoration: none !important;
+}
