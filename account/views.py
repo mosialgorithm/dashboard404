@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, request, jsonify, session
 from flask_login import login_user, current_user, logout_user
 from . import account
 from .forms import RegisterForm
-from .models import UserModel, UserPhoneModel
+from .models import UserModel, UserPhoneModel, UserLogModel
 
 
 
@@ -82,6 +82,12 @@ def login():
                 'message': 'this phone number is not registered yet',
             })
         if user.check_password(password):
+            user_log = UserLogModel()
+            user_log.user_id = user.id
+            user_log.login_at = datetime.now()
+            user_log.is_active = True
+            db.session.add(user_log)
+            db.session.commit()
             login_user(user)
             return jsonify({
                 'status': 'success',
@@ -157,5 +163,13 @@ def login_by_phone_auth():
 
 @account.route('/logout')
 def logout():
+    current_user_id = current_user.id
     logout_user()
+    user_log = UserLogModel.query.filter_by(user_id=current_user_id, is_active=True).first()
+    user_log.logout_at = datetime.now()
+    user_log.is_active = False
+    db.session.add(user_log)
+    db.session.commit()
+    
+
     return redirect(url_for('account.login'))

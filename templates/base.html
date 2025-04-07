@@ -4,10 +4,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="description" content="flask admin panel with alpine & htmx">
+  <meta name="author" content="mosi">
   <link rel="icon" href="favicon.ico">
+
   <title>Dashboard | {% block title %}{% endblock %}</title>
+
+  
+  {{ moment.include_moment() }}
+  {{ moment.lang("fa").format('LLL') }}
+  {{ moment.locale("fa") }}
+
   {% include 'sections/head.html' %}
 </head>
 

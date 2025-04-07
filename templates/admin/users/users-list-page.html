@@ -23,7 +23,8 @@
                         <th>شماره همراه</th>
                         <th>نقش کاربر</th>
                         <th>زمان ثبت نام</th>
-                        <th class="text-center">عملیات</th>
+                        <th>آخرین ورود</th>
+                        <th class="">عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +37,13 @@
                         </td>
                         <td>
                             <p class="mb-0"><strong>{{user.full_name}}</strong></p>
-                            <small class="mb-0 text-muted">2474</small>
+                            <small class="mb-0 text-muted">
+                                {% if user.sex() == 'male' %}
+                                <i class="text-muted">آقا</i>
+                                {% else %}
+                                <i class="text-muted">خانم</i>
+                                {% endif %}
+                            </small>
                         </td>
                         <td>
                             <p class="mb-0">{{ user.phone }}</p>
@@ -44,15 +51,24 @@
                         </td>
                         <td>
                             {% if user.is_superuser() %}
-                            <p class="mb-0"><a href="#" class="text-danger">سوپریوزر</a></p>
+                            <p class="mb-0"><a href="#" class="bg-danger text-white p-1">سوپریوزر</a></p>
                             {% elif user.is_admin() %}
-                            <p class="mb-0"><a href="#" class="text-success">ادمین سایت</a></p>
+                            <p class="mb-0"><a href="#" class="bg-info text-white p-1">ادمین سایت</a></p>
                             {% else %}
-                            <p class="mb-0"><a href="#" class="text-info">کاربر عادی</a></p>
+                            <p class="mb-0"><a href="#" class="bg-secondary text-white p-1">کاربر عادی</a></p>
                             {% endif %}
                             <!-- <small class="mb-0 text-muted">Nigeria</small> -->
                         </td>
-                        <td class="">{{ user.created_at }}</td>
+                        <td class="">
+                            <!-- <p class="mb-1 text-info">{{ user.created_at.strftime('%Y-%m-%d') }}</p> -->
+                            <p class="mb-1 text-info">{{ moment(user.created_at).fromNow(refresh=True) }}</p>
+                            <small class="mb-0 text-danger">{{ user.created_at.strftime('%H:%M') }}</small>
+                        </td>
+                        <td class="">
+                            <p class="mb-1 text-info">{{ user.last_login()[0] }}</p>
+                            <small class="mb-0 text-danger">{{ user.last_login()[1] }}</small>
+                            
+                        </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-success"><i class="fe fe-eye fe-16"></i></button>

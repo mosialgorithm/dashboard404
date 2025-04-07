@@ -3,6 +3,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Development
+from flask_moment import Moment
 
 
 
@@ -22,6 +23,7 @@ db = SQLAlchemy(app)
 # migrate = Migrate(app, db, compare_type=True)
 migrate = Migrate(app, db)
 
+moment = Moment(app)
 
 
 
