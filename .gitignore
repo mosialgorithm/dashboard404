@@ -27,5 +27,5 @@ htmlcov/
 # developer 
 assets/*
 images/*
-uploads/*
+/static/uploads/*
 
