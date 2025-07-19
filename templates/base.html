@@ -8,13 +8,15 @@
   <meta name="author" content="mosi">
   <link rel="icon" href="favicon.ico">
 
-  <title>Dashboard | {% block title %}{% endblock %}</title>
+  <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/moment-with-locales.min.js')}}"></script>
 
-  
+
   {{ moment.include_moment() }}
-  {{ moment.lang("fa").format('LLL') }}
-  {{ moment.locale("fa") }}
+  {{ moment.lang("fa") }}
 
+  <title>Dashboard | {% block title %}{% endblock %}</title>
+  
   {% include 'sections/head.html' %}
 </head>
 

@@ -1,0 +1,255 @@
+{% extends 'admin/index.html' %}
+{% block title %} تنظیمات سایت {% endblock %}
+{% block dashboard_content %}
+
+<div class="col-10 col-lg-10 col-xl-10">
+    <h2 class="h3 mb-4 page-title">تنظیمات سایت</h2>
+    <div class="my-4">
+        <form x-data="settingsForm" x-cloak>
+            <div class="form-row">
+                <!-- title -->
+                <div class="form-group col-md-4">
+                    <label for="firstname">عنوان سایت</label>
+                    <input type="text" x-model="title" id="firstname" class="form-control"
+                        :placeholder="titlePlaceholder">
+                </div>
+                <!-- description -->
+                <div class="form-group col-md-8">
+                    <label for="lastname">توضیحات تکمیلی</label>
+                    <input type="text" x-model="description" id="lastname" class="form-control"
+                        :placeholder="descriptionPlaceholder">
+                </div>
+            </div>
+            <div class="form-row">
+                <!-- email -->
+                <div class="form-group col-md-4">
+                    <label for="inputEmail4">ایمیل</label>
+                    <input type="email" x-model="email" class="form-control" :placeholder="emailPlaceholder">
+                </div>
+                <!-- mobile -->
+                <div class="form-group col-md-4">
+                    <label for="inputEmail4">شماره همراه</label>
+                    <input type="text" x-model="mobile" class="form-control" :placeholder="mobilePlaceholder">
+                </div>
+                <!-- phone -->
+                <div class="form-group col-md-4">
+                    <label for="inputEmail4">تلفن</label>
+                    <input type="text" x-model="phone" class="form-control" :placeholder="phonePlaceholder">
+                </div>
+            </div>
+            <div class="form-row">
+                <!-- address -->
+                <div class="form-group col-md-10">
+                    <label for="inputAddress5">آدرس کامل</label>
+                    <input type="text" x-model="address" class="form-control" :placeholder="addressPlaceholder">
+                </div>
+                <!-- post code -->
+                <div class="form-group col-md-2">
+                    <label for="inputZip5">شماره پستی</label>
+                    <input type="text" x-model="postCode" class="form-control" :placeholder="postCodePlaceholder">
+                </div>
+            </div>
+            <!-- upload logo -->
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="customFile">لوگوی سایت</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input form-control" @change="handleFileSelect($event)"
+                            accept="image/*">
+                        <label class="custom-file-label" for="customFile">
+                            <span>Choose file</span>
+                        </label>
+                        <p x-if="selectedFile" x-text="selectedFile.name" class="text fw-6 text-danger mt-3"></p>
+                    </div>
+                </div>
+                <!-- logo preview -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img width="150" :src="imgSrc" alt="logo site" class="avatar-img rounded-circle">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of upload logo -->
+            <div class="text-center my-5">
+                <button type="submit" @click.prevent="submitForm()" class="btn btn-lg btn-primary">ذخیره اطلاعات
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('settingsForm', () => ({
+            title: '',
+            titlePlaceholder: '',
+            description: '',
+            descriptionPlaceholder: '',
+            email: '',
+            emailPlaceholder: '',
+            mobile: '',
+            mobilePlaceholder: '',
+            phone: '',
+            phonePlaceholder: '',
+            address: '',
+            addressPlaceholder: '',
+            postCode: '',
+            postCodePlaceholder: '',
+            imgSrc: '',
+            logo: '',
+            selectedFile: null,
+
+            async fetchData() {
+                try {
+                    const response = await fetch("{{url_for('admin.get_site_settings')}}");
+                    const data = await response.json();
+                    if (data.status == 'empty') {
+                        this.title = '',
+                            this.titlePlaceholder = 'عنوان مناسبی برای سایت خود معرفی کنید'
+                        this.description = '',
+                            this.descriptionPlaceholder = 'توضیحاتی در مورد سایت خود برای مشتری و همچنین گوگل معرفی کنید',
+                            this.email = '',
+                            this.emailPlaceholder = 'ایمیل وارد شده معتبر باشد',
+                            this.mobile = '',
+                            this.mobilePlaceholder = 'شماره همراه وارد شده ۱۱ رقمی باشد',
+                            this.phone = '',
+                            this.phonePlaceholder = 'تلفن همراه رابا کداستانی بدون خط تیره وارد نمایید',
+                            this.address = '',
+                            this.addressPlaceholder = 'آدرس کامل خود را وارد نمایید',
+                            this.postCode = '',
+                            this.postCodePlaceholder = 'کد پستی خود را به صورت ۱۰ رقمی وارد نمایید',
+                            this.imgSrc = '../../../static/assets/images/logo.png'
+                    }
+                    else {
+                        this.title = data.title,
+                        this.description = data.description,
+                        this.email = data.email,
+                        this.mobile = data.mobile,
+                        this.phone = data.phone,
+                        this.address = data.address,
+                        this.postCode = data.post_code,
+                        this.imgSrc = '../../../' + data.logo
+                        this.logo = data.log
+                    }
+                }
+                catch (error) {
+                    console.log('Error in fetch data is : ', error)
+                }
+            },
+
+            init() {
+                this.fetchData();
+            },
+
+            handleFileSelect() {
+                this.selectedFile = event.target.files[0];
+                this.imgSrc = URL.createObjectURL(this.selectedFile);
+                console.log('image name is : ', this.selectedFile.name)
+            },
+
+            async submitForm() {
+
+                function ValidateEmail(email) {
+                    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                    return reg.test(email)
+                }
+
+                if (this.title.trim() == '') {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'عنوان سایت را وارد نمایید'
+                    });
+                    return false
+                }
+                else if (this.description.trim() == '') {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'توضیحاتی در مورد سایت خود شرح دهید'
+                    });
+                    return false
+                }
+                else if (!ValidateEmail(this.email.trim())) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'ایمیل شما صحصح نمی باشد'
+                    });
+                    return false
+                }
+                else if (this.phone.trim().length != 11) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'تلفن وارد شده صحصح نیست'
+                    });
+                    return false
+                }
+                else if (this.mobile.trim().length != 11) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'شماره همراه وارد شده صحیح نیست'
+                    });
+                    return false
+                }
+                else if (this.address.trim() == '') {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'آدرس محل فعالیت خود را وارد نمایید'
+                    });
+                    return false
+                }
+                else if (this.postCode.trim().length != 10) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'کد پستی وارد شده صحیح نمی باشد'
+                    });
+                    return false
+                }
+                else if (this.selectedFile == null) {
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'عکسی برای سایت خود انتخاب نکرده اید'
+                    });
+                    return false
+                }
+
+                const fromData = new FormData();
+
+                fromData.append('title', this.title)
+                fromData.append('description', this.description)
+                fromData.append('is_active', this.is_active)
+                fromData.append('email', this.email)
+                fromData.append('mobile', this.mobile)
+                fromData.append('phone', this.phone)
+                fromData.append('address', this.address)
+                fromData.append('post_code', this.postCode)
+                fromData.append('logo', this.selectedFile)
+
+                for (var pair of fromData.entries()) {
+                    console.log(pair[0] + " -> " + pair[1]);
+                }
+
+                const response = await fetch("{{url_for('admin.site_settings')}}", {
+                    method: 'POST',
+                    body: fromData
+                });
+                const data = response.json()
+                if (data.status === 'ok') {
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: data.message,
+                    });
+                    fetchData();
+                }
+                else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: data.message
+                    });
+                }
+            }
+        }));
+    })
+</script>
+{% endblock %}

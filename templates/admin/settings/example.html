@@ -1,0 +1,111 @@
+<div x-data="fileUpload()">
+    <input type="file" @change="handleFileSelect($event)" accept="image/*">
+    <button @click="uploadFile()" :disabled="!selectedFile || isUploading">
+        <span x-show="!isUploading">Upload</span>
+        <span x-show="isUploading">Uploading...</span>
+    </button>
+
+    <div x-show="isUploading">
+        Progress: <span x-text="progress"></span>%
+    </div>
+    <div x-show="message" x-text="message"></div>
+</div>
+
+<script>
+    function fileUpload() {
+        return {
+            selectedFile: null,
+            isUploading: false,
+            progress: 0,
+            message: '',
+
+            handleFileSelect(event) {
+                if (event.target.files.length) {
+                    this.selectedFile = event.target.files[0];
+                    this.message = '';
+                }
+            },
+
+            async uploadFile() {
+                if (!this.selectedFile) {
+                    this.message = 'Please select a file first.';
+                    return;
+                }
+
+                this.isUploading = true;
+                this.progress = 0;
+                this.message = '';
+
+                const formData = new FormData();
+                formData.append('file', this.selectedFile);
+
+                try {
+                    const response = await fetch('/upload', { // Replace '/upload' with your server endpoint
+                        method: 'POST',
+                        body: formData,
+                        // For progress tracking, you'd typically need a custom XMLHttpRequest or a library
+                        // Fetch API doesn't directly expose progress events for upload.
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        this.message = 'File uploaded successfully!';
+                        this.selectedFile = null; // Clear selected file
+                    } else {
+                        const error = await response.json();
+                        this.message = `Upload failed: ${error.message || 'Unknown error'}`;
+                    }
+                } catch (error) {
+                    this.message = `Network error: ${error.message}`;
+                } finally {
+                    this.isUploading = false;
+                }
+            }
+        }
+    }
+</script>
+
+
+<!-- my me -->
+ <div x-data="fileUpload()">
+    <input type="file" @change="handleFileSelect($event)" accept="image/*">
+    <button @click="uploadFile()">send File</button>
+</div>
+
+ <script>
+    function fileUpload(){
+        console.log('upload file is running ...')
+        return{
+            selectedFile: null,
+
+            handleFileSelect(event){
+                this.selectedFile = event.target.files[0];
+                // if(event.target.files.length){}
+            },
+
+            async uploadFile(){
+                if(!this.selectedFile){
+                    return
+                }
+
+                const formData = new FormData()
+                formData.append('image', this.selectedFile);
+
+                try{
+                    const response = await fetch(`{{url_for('admin.site_image')}}`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    if(response.ok){
+                        const result = await response.json()
+                        alert('file is uploaded')
+                    }
+                }
+                catch(error){
+                    alert(error)
+                }
+            }
+
+        }
+    }
+</script>

@@ -16,6 +16,7 @@ class Config(object):
     # SECRET_KEY = "my_name_is_mostafa_ghorbani"
 
     # ======================= File Uploading ================================
+    # UPLOAD_FOLDER = os.path.curdir + '/uploads'
     UPLOAD_FOLDER = os.path.curdir + '/static/uploads'
     # UPLOAD_FOLDER = '/static/uploads'
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}

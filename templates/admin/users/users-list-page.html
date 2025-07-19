@@ -9,7 +9,7 @@
         </div>
         <div class="col-auto">
             <!-- <button type="button" class="btn btn-secondary"><span class="fe fe-trash fe-12 mr-2"></span>Delete</button> -->
-            <button type="button" class="btn btn-primary"><span class="fe fe-filter fe-12 mr-2"></span>کاربر جدید</button>
+            <button type="button" class="btn btn-primary"><span class="fe fe-user-plus fe-12 mr-2"></span>کاربر جدید</button>
         </div>
     </div>
     <!-- table -->
@@ -46,8 +46,8 @@
                             </small>
                         </td>
                         <td>
-                            <p class="mb-0">{{ user.phone }}</p>
-                            <small class="mb-0 text-muted">Ap #331-7123 Lobortis Avenue</small>
+                            <p class="mb-0 text-muted">{{ user.phone }}</p>
+                            <!-- <small class="mb-0 text-muted">Ap #331-7123 Lobortis Avenue</small> -->
                         </td>
                         <td>
                             {% if user.is_superuser() %}
@@ -61,19 +61,31 @@
                         </td>
                         <td class="">
                             <!-- <p class="mb-1 text-info">{{ user.created_at.strftime('%Y-%m-%d') }}</p> -->
-                            <p class="mb-1 text-info">{{ moment(user.created_at).fromNow(refresh=True) }}</p>
-                            <small class="mb-0 text-danger">{{ user.created_at.strftime('%H:%M') }}</small>
+                            <p class="mb-1 text-secondary">
+                                <span class="fe fe-calendar"></span>
+                                <span>{{ moment(user.created_at).fromNow(refresh=True) }}</span>
+                            </p>
+                            <small class="mb-0 text-secondary">
+                                <span class="fe fe-clock"></span>
+                                <span>{{ user.created_at.strftime('%H:%M') }}</span>
+                            </small>
                         </td>
                         <td class="">
-                            <p class="mb-1 text-info">{{ user.last_login()[0] }}</p>
-                            <small class="mb-0 text-danger">{{ user.last_login()[1] }}</small>
+                            <p class="mb-1 text-secondary text-bold">
+                                <span class="fe fe-calendar"></span>
+                                <span>{{ user.last_login()[0] }}</span>
+                            </p>
+                            <small class="mb-0 text-secondary">
+                                <span class="fe fe-clock"></span>
+                                <span>{{ user.last_login()[1] }}</span>
+                            </small>
                             
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-success"><i class="fe fe-eye fe-16"></i></button>
-                                <button type="button" class="btn btn-info"><i class="fe fe-edit-3 fe-16"></i></button>
-                                <button type="button" class="btn btn-danger"><i class="fe fe-x fe-16"></i></button>
+                                <button type="button" class="btn btn-outline-success"><i class="fe fe-eye fe-16"></i></button>
+                                <button type="button" class="btn btn-outline-info"><i class="fe fe-edit-3 fe-16"></i></button>
+                                <button type="button" class="btn btn-outline-danger"><i class="fe fe-x fe-16"></i></button>
                               </div>
                         </td>
                     </tr>

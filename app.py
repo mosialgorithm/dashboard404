@@ -1,3 +1,4 @@
+import jinja_partials
 from flask import Flask, render_template, redirect, flash, url_for, jsonify
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -8,6 +9,8 @@ from flask_moment import Moment
 
 
 app = Flask(__name__)
+
+jinja_partials.register_extensions(app)
 
 app.config.from_object(Development)
 

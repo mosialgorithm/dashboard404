@@ -26,11 +26,13 @@
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit" @click.prevent="submitForm()">ورود به
                 سایت</button>
-                <p class="mt-5">
-                    <a class="text-center text-danger" href="{{url_for('account.login_by_phone')}}">ورود با کد یک بار مصرف</a>
-                </p>
-                <p class="mt-5 mb-3 text-muted">© 2025</p>
+            <a class="btn btn-lg btn-outline-danger btn-block" href="{{url_for('account.register')}}">ثبت نام در سایت</a>
+            <a class="btn btn-lg btn-outline-warning btn-block" href="{{url_for('account.login_by_phone')}}">ورود با کد
+                یکبار مصرف</a>
+            <p class="mt-5 mb-3 text-muted">© 2025</p>
+
         </form>
+
     </div>
 </div>
 <script>
@@ -81,6 +83,7 @@
                                 });
                             }
                         })
+                        .catch((error) => console.log('error is : ', error))
                 }
             }
         }))

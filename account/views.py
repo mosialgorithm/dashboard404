@@ -9,17 +9,11 @@ from .models import UserModel, UserPhoneModel, UserLogModel
 
 
 
+
 @account.route('/register', methods=['GET', 'POST'])
 def register(): 
     if request.method == 'POST':
-        form = RegisterForm(request.form)
-        print('form is : ', form)
-        print('request form is : ', request.form)
-        print('request post -> ', request.data, request.form, request.args)
-        # full_name = form['full_name']
-        # phone = form['phone']
-        # password = form['password']
-        # password_confirm = form['password_confirm']
+        # form = RegisterForm(request.form)
         full_name = request.form.get('full_name')
         phone = request.form.get('phone')
         password = request.form.get('password')
