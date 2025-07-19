@@ -1,0 +1,130 @@
+Here’s an example of a Persian datepicker using Alpine.js. This example integrates the Jalali calendar (used in Persian culture) with a simple datepicker interface. We'll use the jalali-moment library to handle Persian dates.
+
+Example: Persian Datepicker with Alpine.js
+Copy the code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpine.js Persian Datepicker</title>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/jalali-moment/dist/jalali-moment.browser.js"></script> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .datepicker {
+      position: relative;
+      display: inline-block;
+    }
+    .datepicker-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+      z-index: 10;
+      display: none;
+    }
+    .datepicker-dropdown.active {
+      display: block;
+    }
+    .datepicker-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+    .datepicker-day {
+      padding: 5px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid #ddd;
+    }
+    .datepicker-day:hover {
+      background: #f0f0f0;
+    }
+    .selected {
+      background: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div x-data="persianDatepicker()" class="datepicker">
+  <input type="text" x-model="formattedDate" readonly @click="toggleDropdown()" placeholder="تاریخ را انتخاب کنید" />
+  <div class="datepicker-dropdown" :class="{ 'active': isOpen }">
+    <div>
+      <button @click="prevMonth()">&#8249;</button>
+      <span x-text="currentMonthName + ' ' + currentYear"></span>
+      <button @click="nextMonth()">&#8250;</button>
+    </div>
+    <div class="datepicker-days">
+      <template x-for="day in daysInMonth" :key="day">
+        <div class="datepicker-day" :class="{ 'selected': day === selectedDay }" @click="selectDate(day)">
+          <span x-text="day"></span>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>
+
+<script>
+  function persianDatepicker() {
+    return {
+      isOpen: false,
+      selectedDay: null,
+      selectedMonth: moment().jMonth(),
+      selectedYear: moment().jYear(),
+      formattedDate: '',
+      toggleDropdown() {
+        this.isOpen = !this.isOpen;
+      },
+      daysInMonth() {
+        return Array.from({ length: moment.jDaysInMonth(this.selectedYear, this.selectedMonth) }, (_, i) => i + 1);
+      },
+      currentMonthName() {
+        return moment.jMonths()[this.selectedMonth];
+      },
+      currentYear() {
+        return this.selectedYear;
+      },
+      prevMonth() {
+        if (this.selectedMonth === 0) {
+          this.selectedMonth = 11;
+          this.selectedYear--;
+        } else {
+          this.selectedMonth--;
+        }
+      },
+      nextMonth() {
+        if (this.selectedMonth === 11) {
+          this.selectedMonth = 0;
+          this.selectedYear++;
+        } else {
+          this.selectedMonth++;
+        }
+      },
+      selectDate(day) {
+        this.selectedDay = day;
+        const date = moment().jYear(this.selectedYear).jMonth(this.selectedMonth).jDate(day);
+        this.formattedDate = date.format('jYYYY/jMM/jDD');
+        this.isOpen = false;
+      }
+    };
+  }
+</script>
+
+</body>
+</html>
+
+Key Features:
+Jalali Calendar: The jalali-moment library is used to handle Persian dates.
+Dropdown Toggle: The datepicker dropdown opens and closes when the input is clicked.
+Month Navigation: Users can navigate between months using the previous and next buttons.
+Formatted Date: The selected date is displayed in the Persian format (e.g., 1404/04/28).
+Notes:
+You can

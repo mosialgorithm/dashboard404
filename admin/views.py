@@ -1,4 +1,6 @@
 import os
+import datetime
+import jdatetime
 from pathlib import Path
 import json
 from app import db, app
@@ -38,6 +40,12 @@ def get_site_settings():
             'message': 'not found any data'
         })
     data = settings.__dict__
+    # -------------------- convert timimg to gregorian ---------------------
+    gregorian_datetime = data['start_time']
+    jalali_datetime = jdatetime.datetime.fromgregorian(datetime=gregorian_datetime)
+    start_time = jalali_datetime
+    start_time_convert = f'{start_time.year}-{start_time.month}-{start_time.day}'
+    # ------------------------------------------------------------------------
     response = jsonify({
         'title': data['title'],
         'description': data['description'],
@@ -46,6 +54,7 @@ def get_site_settings():
         'phone': data['phone'],
         'address': data['address'],
         'post_code': data['post_code'],
+        'start_time': start_time_convert,
         'logo': data['logo']
     })
     return make_response(response, 200)
@@ -65,6 +74,15 @@ def site_settings():
         settings.phone = request.form.get('phone')
         settings.address = request.form.get('address')
         settings.post_code = request.form.get('post_code')
+        # ------------ time jalali to gregorian -------------
+        time = request.form.get('start_time')
+        print('time is : ', time)
+        year = time.split('-')[0]
+        month = time.split('-')[1]
+        day = time.split('-')[2]
+        jalali_date = jdatetime.date(int(time.split('-')[0]), int(time.split('-')[1]), int(time.split('-')[2]))
+        settings.start_time = jalali_date.togregorian()
+        # ---------------------------------------------------
         if request.files:
             file = request.files.get('logo')
             if file.filename == '':

@@ -1,6 +1,8 @@
 {% extends 'admin/index.html' %}
 {% block title %} تنظیمات سایت {% endblock %}
 {% block dashboard_content %}
+<script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+<script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
 
 <div class="col-10 col-lg-10 col-xl-10">
     <h2 class="h3 mb-4 page-title">تنظیمات سایت</h2>
@@ -49,6 +51,17 @@
                     <input type="text" x-model="postCode" class="form-control" :placeholder="postCodePlaceholder">
                 </div>
             </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="date-input1"> زمان تاسیس شرکت</label>
+                    <div class="input-group">
+                        <input x-model="startTime" type="text" placeholder="YYYY-MM-DD" class="form-control">
+                        <!-- <input type="date" x-model="dateTimeValue" class="form-control"> -->
+                        <!-- <input type="text" name="datetimes" class="form-control datetimes">
+                        <input x-model="dateTimeValue" type="datetime" name="datetimes" class="form-control"> -->
+                    </div>
+                </div>
+            </div>
             <!-- upload logo -->
             <div class="form-row">
                 <div class="form-group col-md-3">
@@ -59,7 +72,8 @@
                         <label class="custom-file-label" for="customFile">
                             <span>Choose file</span>
                         </label>
-                        <p x-if="selectedFile" x-text="selectedFile.name" class="text fw-6 text-danger mt-3"></p>
+                        <p x-show="selectedFile" x-text="selectedFile ? selectedFile.name : '' "
+                            class="text fw-6 text-danger mt-3"></p>
                     </div>
                 </div>
                 <!-- logo preview -->
@@ -97,9 +111,12 @@
             addressPlaceholder: '',
             postCode: '',
             postCodePlaceholder: '',
+            start_time : '',
             imgSrc: '',
             logo: '',
             selectedFile: null,
+            // dateTimeValue: new Date().toLocaleDateString('fa-IR-u-nu-latn') ,
+            startTime: null,
 
             async fetchData() {
                 try {
@@ -107,20 +124,21 @@
                     const data = await response.json();
                     if (data.status == 'empty') {
                         this.title = '',
-                            this.titlePlaceholder = 'عنوان مناسبی برای سایت خود معرفی کنید'
+                        this.titlePlaceholder = 'عنوان مناسبی برای سایت خود معرفی کنید'
                         this.description = '',
-                            this.descriptionPlaceholder = 'توضیحاتی در مورد سایت خود برای مشتری و همچنین گوگل معرفی کنید',
-                            this.email = '',
-                            this.emailPlaceholder = 'ایمیل وارد شده معتبر باشد',
-                            this.mobile = '',
-                            this.mobilePlaceholder = 'شماره همراه وارد شده ۱۱ رقمی باشد',
-                            this.phone = '',
-                            this.phonePlaceholder = 'تلفن همراه رابا کداستانی بدون خط تیره وارد نمایید',
-                            this.address = '',
-                            this.addressPlaceholder = 'آدرس کامل خود را وارد نمایید',
-                            this.postCode = '',
-                            this.postCodePlaceholder = 'کد پستی خود را به صورت ۱۰ رقمی وارد نمایید',
-                            this.imgSrc = '../../../static/assets/images/logo.png'
+                        this.descriptionPlaceholder = 'توضیحاتی در مورد سایت خود برای مشتری و همچنین گوگل معرفی کنید',
+                        this.email = '',
+                        this.emailPlaceholder = 'ایمیل وارد شده معتبر باشد',
+                        this.mobile = '',
+                        this.mobilePlaceholder = 'شماره همراه وارد شده ۱۱ رقمی باشد',
+                        this.phone = '',
+                        this.phonePlaceholder = 'تلفن همراه رابا کداستانی بدون خط تیره وارد نمایید',
+                        this.address = '',
+                        this.addressPlaceholder = 'آدرس کامل خود را وارد نمایید',
+                        this.postCode = '',
+                        this.postCodePlaceholder = 'کد پستی خود را به صورت ۱۰ رقمی وارد نمایید',
+                        this.startTime = 'YYYY-MM-DD',
+                        this.imgSrc = '../../../static/assets/images/logo.png'
                     }
                     else {
                         this.title = data.title,
@@ -130,7 +148,8 @@
                         this.phone = data.phone,
                         this.address = data.address,
                         this.postCode = data.post_code,
-                        this.imgSrc = '../../../' + data.logo
+                        this.startTime = data.start_time,
+                        this.imgSrc = '../../../' + data.logo,
                         this.logo = data.log
                     }
                 }
@@ -138,7 +157,6 @@
                     console.log('Error in fetch data is : ', error)
                 }
             },
-
             init() {
                 this.fetchData();
             },
@@ -146,11 +164,11 @@
             handleFileSelect() {
                 this.selectedFile = event.target.files[0];
                 this.imgSrc = URL.createObjectURL(this.selectedFile);
-                console.log('image name is : ', this.selectedFile.name)
+                // console.log('image name is : ', this.selectedFile.name)
             },
 
             async submitForm() {
-
+                console.log('date time : ', this.dateTimeValue);
                 function ValidateEmail(email) {
                     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
                     return reg.test(email)
@@ -205,7 +223,14 @@
                     });
                     return false
                 }
-                else if (this.selectedFile == null) {
+                else if(this.startTime == ''){
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'لطفا زمان شروع راه اندازی سایت خود را وارد نمایید'
+                    });
+                    return false
+                }
+                else if (this.selectedFile == null && this.imgSrc == null) {
                     Toast.fire({
                         icon: 'warning',
                         title: 'عکسی برای سایت خود انتخاب نکرده اید'
@@ -223,6 +248,7 @@
                 fromData.append('phone', this.phone)
                 fromData.append('address', this.address)
                 fromData.append('post_code', this.postCode)
+                fromData.append('start_time', this.startTime)
                 fromData.append('logo', this.selectedFile)
 
                 for (var pair of fromData.entries()) {
@@ -235,7 +261,6 @@
                 });
                 const data = response.json()
                 if (data.status === 'ok') {
-
                     Toast.fire({
                         icon: 'success',
                         title: data.message,

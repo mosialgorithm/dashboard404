@@ -17,6 +17,7 @@ class SiteSettingsModel(db.Model):
     phone = Column(String(11), nullable=True)
     address = Column(String(500), nullable=True)
     post_code = Column(String(10), nullable=True)
+    start_time = Column(DateTime())
     is_active = Column(Boolean(), default=True)
     created_at = Column(DateTime(), default=datetime.now())
     updated_at = Column(DateTime(), default=datetime.now())

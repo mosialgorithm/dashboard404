@@ -1,10 +1,9 @@
 import jinja_partials
-from flask import Flask, render_template, redirect, flash, url_for, jsonify
+from flask import Flask, render_template, redirect, flash, url_for, jsonify, g
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Development
-from flask_moment import Moment
 
 
 
@@ -25,8 +24,6 @@ db = SQLAlchemy(app)
 
 # migrate = Migrate(app, db, compare_type=True)
 migrate = Migrate(app, db)
-
-moment = Moment(app)
 
 
 
@@ -70,6 +67,10 @@ def unauthorized():
     return redirect(url_for('account.login'))
 # ...........................................................................
 
+
+
+# from admin.models import SiteSettingsModel
+# g.site_settings = SiteSettingsModel.query.order_by(SiteSettingsModel.id.desc()).first()
 
 
 

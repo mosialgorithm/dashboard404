@@ -5,19 +5,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="flask admin panel with alpine & htmx">
-  <meta name="author" content="mosi">
-  <link rel="icon" href="favicon.ico">
+  <meta name="author" content="mosii <mosi.ghorbani@gmail.com>">
+  <!-- <link rel="icon" href="favicon.ico"> -->
 
   <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
   <script src="{{url_for('static', filename='js/moment-with-locales.min.js')}}"></script>
 
-
-  {{ moment.include_moment() }}
-  {{ moment.lang("fa") }}
-
   <title>Dashboard | {% block title %}{% endblock %}</title>
   
   {% include 'sections/head.html' %}
+
 </head>
 
 <body class="vertical  light rtl ">
