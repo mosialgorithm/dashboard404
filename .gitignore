@@ -25,7 +25,7 @@ htmlcov/
 *,cover
 
 # developer 
-assets/*
-images/*
-/static/uploads/*
+static/assets/*
+static/images/*
+static/uploads/*
 
