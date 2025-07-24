@@ -1,0 +1,109 @@
+{% extends 'admin/index.html' %}
+{% block title %} لیست کاربران {% endblock %}
+{% block dashboard_content %}
+<!-- <h1 class="alert alert-danger text-center">users list page</h1> -->
+<div class="col-12">
+    <div class="row align-items-center my-4">
+        <div class="col">
+            <h2 class="h3 mb-0 page-title">لیست کاربران</h2>
+        </div>
+        <div class="col-auto">
+            <!-- <button type="button" class="btn btn-secondary"><span class="fe fe-trash fe-12 mr-2"></span>Delete</button> -->
+            <button type="button" class="btn btn-primary"><span class="fe fe-user-plus fe-12 mr-2"></span>کاربر جدید</button>
+        </div>
+    </div>
+    <!-- table -->
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-borderless table-hover" id="dataTable-1">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>آواتار</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>شماره همراه</th>
+                        <th>نقش کاربر</th>
+                        <th>زمان ثبت نام</th>
+                        <th>آخرین ورود</th>
+                        <th class="">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                    <tr>
+                        <td>
+                            <div class="avatar avatar-sm">
+                                <img src="{{url_for('static', filename=user.avatar)}}" alt="..." class="avatar-img rounded-circle">
+                            </div>
+                        </td>
+                        <td>
+                            <p class="mb-0"><strong>{{user.full_name}}</strong></p>
+                            <small class="mb-0 text-muted">
+                                {% if user.sex() == 'male' %}
+                                <i class="text-muted">آقا</i>
+                                {% else %}
+                                <i class="text-muted">خانم</i>
+                                {% endif %}
+                            </small>
+                        </td>
+                        <td>
+                            <p class="mb-0 text-muted">{{ user.phone }}</p>
+                            <!-- <small class="mb-0 text-muted">Ap #331-7123 Lobortis Avenue</small> -->
+                        </td>
+                        <td>
+                            {% if user.is_superuser() %}
+                            <p class="mb-0"><a href="#" class="bg-danger text-white p-1">سوپریوزر</a></p>
+                            {% elif user.is_admin() %}
+                            <p class="mb-0"><a href="#" class="bg-info text-white p-1">ادمین سایت</a></p>
+                            {% else %}
+                            <p class="mb-0"><a href="#" class="bg-secondary text-white p-1">کاربر عادی</a></p>
+                            {% endif %}
+                            <!-- <small class="mb-0 text-muted">Nigeria</small> -->
+                        </td>
+                        <td class="">
+                            <!-- <p class="mb-1 text-info">{{ user.created_at.strftime('%Y-%m-%d') }}</p> -->
+                            <p class="mb-1 text-secondary">
+                                <span class="fe fe-calendar"></span>
+                                <span>{{ moment(user.created_at).fromNow(refresh=True) }}</span>
+                            </p>
+                            <small class="mb-0 text-secondary">
+                                <span class="fe fe-clock"></span>
+                                <span>{{ user.created_at.strftime('%H:%M') }}</span>
+                            </small>
+                        </td>
+                        <td class="">
+                            <p class="mb-1 text-secondary text-bold">
+                                <span class="fe fe-calendar"></span>
+                                <span>{{ user.last_login()[0] }}</span>
+                            </p>
+                            <small class="mb-0 text-secondary">
+                                <span class="fe fe-clock"></span>
+                                <span>{{ user.last_login()[1] }}</span>
+                            </small>
+                            
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-outline-success"><i class="fe fe-eye fe-16"></i></button>
+                                <button type="button" class="btn btn-outline-info"><i class="fe fe-edit-3 fe-16"></i></button>
+                                <button type="button" class="btn btn-outline-danger"><i class="fe fe-x fe-16"></i></button>
+                              </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <nav aria-label="Table Paging" class="my-3">
+        <ul class="pagination justify-content-end mb-0">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+</div> <!-- .col-12 -->
+{% endblock %}
+
+// const response = fetch(`/admin/user-delete/${user_id}`, {method: 'DELETE'});

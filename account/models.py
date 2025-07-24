@@ -23,7 +23,6 @@ class UserModel(db.Model, UserMixin):
     created_at = Column(DateTime(), default=datetime.now())
     updated_at = Column(DateTime(), default=datetime.now())
     logs = db.relationship('UserLogModel', backref='user')
-    
 
     def __repr__(self):
         return f'{self.id} :: {self.phone}'
@@ -33,6 +32,17 @@ class UserModel(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+    def remove(self):
+        db.session.delete(self)
+        db.session.commit()
     
     def is_superuser(self):
         return self.role == 0

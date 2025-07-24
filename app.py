@@ -2,12 +2,16 @@ import jinja_partials
 from flask import Flask, render_template, redirect, flash, url_for, jsonify, g
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from config import Development
 
 
 
+
 app = Flask(__name__)
+
+ma = Marshmallow(app)
 
 jinja_partials.register_extensions(app)
 

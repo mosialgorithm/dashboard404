@@ -1,0 +1,63 @@
+Here’s a simple example of using Alpine.js to display and format a Persian (Jalali) datetime. This example uses the jalaali-js library to handle the conversion to the Persian calendar.
+
+Example: Persian Datetime with Alpine.js
+Copy the code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpine.js Persian Datetime</title>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
+</head>
+<body class="p-4 font-sans">
+
+  <div x-data="persianDatetime()" class="text-center">
+    <h1 class="text-2xl font-bold mb-4">Persian Datetime Example</h1>
+    <p class="text-lg">Current Date and Time:</p>
+    <p class="text-xl font-semibold mt-2" x-text="formattedDatetime"></p>
+    <button 
+      @click="updateDatetime" 
+      class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      Refresh
+    </button>
+  </div>
+
+  <script>
+    function persianDatetime() {
+      return {
+        datetime: new Date(),
+        formattedDatetime: '',
+        updateDatetime() {
+          this.datetime = new Date();
+          this.formatDatetime();
+        },
+        formatDatetime() {
+          const jalaaliDate = jalaali.toJalaali(this.datetime);
+          const hours = this.datetime.getHours().toString().padStart(2, '0');
+          const minutes = this.datetime.getMinutes().toString().padStart(2, '0');
+          const seconds = this.datetime.getSeconds().toString().padStart(2, '0');
+          this.formattedDatetime = 
+            `${jalaaliDate.jy}/${jalaaliDate.jm.toString().padStart(2, '0')}/${jalaaliDate.jd.toString().padStart(2, '0')} - ${hours}:${minutes}:${seconds}`;
+        },
+        init() {
+          this.formatDatetime();
+        }
+      };
+    }
+  </script>
+
+</body>
+</html>
+
+Explanation:
+Alpine.js: Manages the state and reactivity of the datetime display.
+Jalaali-js: Converts the Gregorian date to the Persian (Jalali) calendar.
+Dynamic Updates: The updateDatetime function refreshes the datetime when the button is clicked.
+Initialization: The init method ensures the formatted datetime is displayed when the page loads.
+Output:
+Displays the current Persian date and time in the format YYYY/MM/DD - HH:MM:SS.
+A button allows refreshing the datetime manually.
+
+Feel free to customize the formatting or styling as needed!

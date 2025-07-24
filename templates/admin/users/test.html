@@ -1,0 +1,36 @@
+Here’s an example of how you can use Alpine.js to format a datetime field dynamically. This example demonstrates
+formatting a datetime input into a more readable format using JavaScript's Intl.DateTimeFormat API.
+
+Copy the code
+<div x-data="{ 
+        datetime: '', 
+        formattedDatetime: '', 
+        formatDatetime() { 
+            if (this.datetime) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                this.formattedDatetime = new Intl.DateTimeFormat('en-US', options).format(new Date(this.datetime));
+            } else {
+                this.formattedDatetime = '';
+            }
+        } 
+    }" class="p-4">
+
+    <!-- Input Field -->
+    <label for="datetime" class="block mb-2">Select Date & Time:</label>
+    <input type="datetime-local" id="datetime" x-model="datetime" @input="formatDatetime"
+        class="border p-2 rounded w-full" />
+
+    <!-- Display Formatted Date -->
+    <p class="mt-4 text-gray-700">
+        <strong>Formatted Date:</strong> <span x-text="formattedDatetime"></span>
+    </p>
+</div>
+
+Explanation:
+x-data: Initializes the Alpine.js component with datetime (raw input value) and formattedDatetime (formatted output).
+x-model: Binds the input field to the datetime property.
+@input: Triggers the formatDatetime method whenever the input changes.
+Intl.DateTimeFormat: Formats the datetime string into a human-readable format.
+
+This example is simple, adaptable, and works well for most datetime formatting needs. You can customize the
+Intl.DateTimeFormat options or locale ('en-US') to suit your requirements.

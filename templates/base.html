@@ -10,9 +10,18 @@
 
   <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
   <script src="{{url_for('static', filename='js/moment-with-locales.min.js')}}"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+  <script type="text/javascript"
+    src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
 
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/moment-jalaali@0.10.4/build/moment-jalaali.min.js"></script> -->
+     <script>
+    moment.locale('fa').format('LLLL');
+    // moment.format('jYYYY/jM/jD');
+  </script>
   <title>Dashboard | {% block title %}{% endblock %}</title>
-  
+
   {% include 'sections/head.html' %}
 
 </head>

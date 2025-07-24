@@ -366,3 +366,21 @@
       </div> <!-- Striped rows -->
     </div> <!-- .row-->
   </div> <!-- .col-12 -->
+  <div x-data="{
+    date: new Date(),
+    updateTime() {
+        setInterval(() => this.date = new Date(), 1000);
+    }
+}" x-init="updateTime()">
+        <p x-text="new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'medium' }).format(date)"></p>
+    </div>
+
+
+    <div x-data="{
+    date: new Date(),
+    formatDate(date) {
+        return new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeStyle: 'short' }).format(date);
+    }
+}">
+        <p x-text="formatDate(date)"></p>
+    </div>

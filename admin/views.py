@@ -1,8 +1,6 @@
 import os
-import datetime
 import jdatetime
 from pathlib import Path
-import json
 from app import db, app
 from flask import render_template, redirect, url_for, request, jsonify, make_response
 from sqlalchemy import desc
@@ -11,6 +9,7 @@ from flask_login import login_required
 from account.models import UserModel
 from .models import SiteSettingsModel
 from werkzeug.utils import secure_filename
+from .schemas import user_schema, users_schema
 
 
 
@@ -22,11 +21,113 @@ def index():
     return render_template('admin/dashboard.html')
 
 
+@admin.route('/user-json/<int:user_id>')
+@login_required
+def user_json(user_id):
+    user = UserModel.query.get_or_404(user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    result =  user_schema.dump(user)
+    return jsonify(result)
+
+
+@admin.route('/user/<int:user_id>')
+@login_required
+def user(user_id):
+    user = UserModel.query.get_or_404(user_id)
+    
+    return render_template('admin/users/user-single-page.html', user=user)
+
+
+@admin.route('/users-json')
+@login_required
+def users_json():
+    # all_users = UserModel.query.all()
+    # page = request.args.get('page', 1, type=int)
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 4, type=int)
+    per_page = 4
+    pagination = UserModel.query.order_by(UserModel.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    result =  users_schema.dump(pagination)
+    return jsonify({
+        'data': result,
+        'pagination': {
+            'current_page': pagination.page,
+            'total_pages': pagination.pages,
+            'total_items': pagination.total,
+            'per_page': pagination.per_page,
+            'has_next': pagination.has_next,
+            'has_prev': pagination.has_prev,
+            # 'next_page_url': f'/items?page={pagination.next_num}&per_page={per_page}' if pagination.has_next else None,
+            # 'prev_page_url': f'/items?page={pagination.prev_num}&per_page={per_page}' if pagination.has_prev else None,
+        }
+    })
+
+
 @admin.route('/users')
 @login_required
 def users():
-    all_users = UserModel.query.all()
-    return render_template('admin/users/users-list-page.html', all_users=all_users)
+    # print('users path is clicked')
+    # page = request.args.get('page', 1, type=int)
+    # per_page = 4
+    # all_users = UserModel.query.order_by(UserModel.id.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    # for user in all_users:
+    #     print(user)
+    # print('*'*30)
+    # all_users = UserModel.query.all()
+    # result =  users_schema.dump(all_users)
+    return render_template('admin/users/users-list-page.html')
+
+
+@admin.route('/user-add', methods=['POST'])
+@login_required
+def user_add():
+    # user_data = request.get_json()
+    user_phone = request.form.get('phone')
+    old_user = UserModel.query.filter_by(phone=user_phone).first()
+    if old_user:
+        return jsonify({
+            'status': 'error',
+            'message': 'An user is register by this phone number previously'
+        })
+    new_user = UserModel()
+    new_user.full_name = request.form.get('full_name')
+    new_user.phone = user_phone
+    new_user.set_password(request.form.get('full_name'))
+    try:
+        new_user.save()
+        return jsonify({
+            'status': 'success',
+            'message': f'user by {user_phone} is registered, successfully'
+        })
+    except Exception as ex:
+        return jsonify({
+            'status': 'error',
+            'message': f'error {ex} is happened'
+        })
+
+
+
+@admin.route('/user-delete/<int:user_id>', methods=['DELETE'])
+@login_required
+def user_delete(user_id):
+    print('user delete id called')
+    user = UserModel.query.get_or_404(user_id)
+    full_name = user.full_name
+    print('full name is : ', full_name)
+    try:
+        user.remove()
+        print('user is deleted !!!!!!!!!1')
+        return jsonify({
+        'status': 'ok',
+        'user': full_name
+    })
+    except Exception as ex:
+        return jsonify({
+            "status": "error",
+            "message": f"error {ex} is happened !!, please try again"
+        })
+    
 
 
 @admin.route('/get-site-settings', methods=['GET'])
